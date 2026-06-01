@@ -9,10 +9,12 @@
           "items": {
             "$ref": "#/$defs/ACLEntry"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Access control rules specifying which sources can reach which destinations. Both legacy (users/ports) and current (src/dst) forms are accepted."
         },
         "autoApprovers": {
-          "$ref": "#/$defs/ACLAutoApprovers"
+          "$ref": "#/$defs/ACLAutoApprovers",
+          "description": "Rules for automatically approving route or exit-node advertisements without manual admin action."
         },
         "groups": {
           "additionalProperties": {
@@ -21,13 +23,15 @@
             },
             "type": "array"
           },
-          "type": "object"
+          "type": "object",
+          "description": "Named groups of users, prefixed 'group:'. Values are lists of user emails, tags, or other groups."
         },
         "hosts": {
           "additionalProperties": {
             "type": "string"
           },
-          "type": "object"
+          "type": "object",
+          "description": "Named aliases for IP addresses or CIDR ranges, usable in place of IPs anywhere in the policy."
         },
         "tagOwners": {
           "additionalProperties": {
@@ -36,43 +40,52 @@
             },
             "type": "array"
           },
-          "type": "object"
+          "type": "object",
+          "description": "Defines who may apply each tag (prefixed 'tag:') to devices. Values are user emails or groups."
         },
         "derpMap": {
-          "$ref": "#/$defs/ACLDERPMap"
+          "$ref": "#/$defs/ACLDERPMap",
+          "description": "Custom DERP relay configuration, extending or replacing Tailscale's built-in DERP infrastructure."
         },
         "tests": {
           "items": {
             "$ref": "#/$defs/ACLTest"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Test assertions verified on every policy update; a failing test blocks the update from taking effect."
         },
         "ssh": {
           "items": {
             "$ref": "#/$defs/ACLSSH"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Tailscale SSH access control rules governing which users may open SSH sessions to which devices."
         },
         "nodeAttrs": {
           "items": {
             "$ref": "#/$defs/NodeAttrGrant"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Rules that grant capability attributes (e.g. funnel, mullvad, app-connector) to matched devices."
         },
         "disableIPv4": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Disables IPv4 routing within the tailnet when true."
         },
         "oneCGNATRoute": {
-          "type": "string"
+          "type": "string",
+          "description": "Assigns the full CGNAT range (100.64.0.0/10) as a route on a single device, rather than per-device."
         },
         "randomizeClientPort": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Randomizes the WireGuard listen port on each connection for additional NAT traversal privacy."
         },
         "grants": {
           "items": {
             "$ref": "#/$defs/Grant"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Fine-grained access grants (newer alternative to acls) with per-IP or per-app destination controls."
         },
         "ipsets": {
           "additionalProperties": {
@@ -81,7 +94,8 @@
             },
             "type": "array"
           },
-          "type": "object"
+          "type": "object",
+          "description": "Named sets of IP addresses or CIDRs (prefixed 'ipset:') for reuse across multiple rules."
         },
         "postures": {
           "additionalProperties": {
@@ -90,13 +104,15 @@
             },
             "type": "array"
           },
-          "type": "object"
+          "type": "object",
+          "description": "Named device posture checks (prefixed 'posture:') evaluated against device attribute values."
         },
         "defaultSrcPosture": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Posture checks applied to all traffic sources by default, unless overridden by a per-rule srcPosture."
         },
         "attrConfig": {
           "additionalProperties": {
@@ -135,13 +151,15 @@
             },
             "type": "array"
           },
-          "type": "object"
+          "type": "object",
+          "description": "Maps subnet CIDRs to tags or users whose devices are auto-approved to advertise those routes."
         },
         "exitNode": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Tags or users whose devices are auto-approved to advertise themselves as exit nodes."
         }
       },
       "additionalProperties": false,
@@ -156,10 +174,12 @@
             }
           },
           "additionalProperties": false,
-          "type": "object"
+          "type": "object",
+          "description": "Custom DERP regions keyed by integer region ID."
         },
         "omitDefaultRegions": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "When true, only the regions in this map are used; Tailscale's built-in regions are omitted."
         }
       },
       "additionalProperties": false,
@@ -168,31 +188,40 @@
     "ACLDERPNode": {
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "Node name within the region."
         },
         "regionID": {
-          "type": "integer"
+          "type": "integer",
+          "description": "Region this node belongs to."
         },
         "hostName": {
-          "type": "string"
+          "type": "string",
+          "description": "DNS hostname of the DERP relay."
         },
         "certName": {
-          "type": "string"
+          "type": "string",
+          "description": "TLS certificate hostname if different from HostName."
         },
         "ipv4": {
-          "type": "string"
+          "type": "string",
+          "description": "IPv4 address (overrides DNS lookup)."
         },
         "ipv6": {
-          "type": "string"
+          "type": "string",
+          "description": "IPv6 address (overrides DNS lookup)."
         },
         "stunPort": {
-          "type": "integer"
+          "type": "integer",
+          "description": "STUN port (default 3478)."
         },
         "stunOnly": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "If true, this node provides STUN only, not DERP relay."
         },
         "derpPort": {
-          "type": "integer"
+          "type": "integer",
+          "description": "DERP port (default 443)."
         }
       },
       "additionalProperties": false,
@@ -201,22 +230,27 @@
     "ACLDERPRegion": {
       "properties": {
         "regionID": {
-          "type": "integer"
+          "type": "integer",
+          "description": "Unique numeric ID for this DERP region (must not collide with Tailscale's built-in IDs)."
         },
         "regionCode": {
-          "type": "string"
+          "type": "string",
+          "description": "Short region code, e.g. 'nyc'."
         },
         "regionName": {
-          "type": "string"
+          "type": "string",
+          "description": "Human-readable region name."
         },
         "avoid": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "If true, this region is used only as a last-resort fallback."
         },
         "nodes": {
           "items": {
             "$ref": "#/$defs/ACLDERPNode"
           },
-          "type": "array"
+          "type": "array",
+          "description": "DERP relay nodes in this region."
         }
       },
       "additionalProperties": false,
@@ -225,40 +259,47 @@
     "ACLEntry": {
       "properties": {
         "action": {
-          "type": "string"
+          "type": "string",
+          "description": "Whether to accept or deny matching traffic. One of: 'accept', 'deny'."
         },
         "ports": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "(Legacy) Destination in 'host:port' form. Prefer dst."
         },
         "users": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "(Legacy) Source identities. Prefer src."
         },
         "src": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Source identities: user emails, groups (group:x), tags (tag:x), autogroups, IPs, CIDRs, host aliases, or '*'."
         },
         "dst": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Destination targets with optional port specifier, e.g. 'host:80', 'tag:x:22-443', or '*:*'."
         },
         "proto": {
-          "type": "string"
+          "type": "string",
+          "description": "IP protocol restriction: 'tcp', 'udp', 'icmp', etc. Omit to match all protocols."
         },
         "srcPosture": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Posture check names that must pass for traffic from the source to be accepted."
         }
       },
       "additionalProperties": false,
@@ -267,37 +308,44 @@
     "ACLSSH": {
       "properties": {
         "action": {
-          "type": "string"
+          "type": "string",
+          "description": "SSH connection action: 'accept', 'check' (require IdP re-auth), or 'deny'."
         },
         "users": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "OS-level usernames permitted for the session, e.g. 'root' or 'autogroup:nonroot'."
         },
         "src": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Source identities allowed to initiate SSH sessions."
         },
         "dst": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Destination devices this SSH rule applies to, e.g. 'tag:server' or 'autogroup:self'."
         },
         "checkPeriod": {
-          "type": "integer"
+          "type": "integer",
+          "description": "How often re-authorization is required when action is 'check', e.g. '12h' or 'always'."
         },
         "recorder": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Tailscale IPs or tags of session-recorder hosts. Sessions are streamed to all reachable recorders."
         },
         "enforceRecorder": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "If true, reject the SSH session when no recorder from the Recorder list is reachable."
         }
       },
       "additionalProperties": false,
@@ -306,31 +354,37 @@
     "ACLTest": {
       "properties": {
         "user": {
-          "type": "string"
+          "type": "string",
+          "description": "(Legacy) Source identity. Prefer src."
         },
         "allow": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "(Legacy) Allowed destinations. Prefer accept."
         },
         "deny": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Destination:port pairs the source must NOT be allowed to reach."
         },
         "src": {
-          "type": "string"
+          "type": "string",
+          "description": "Source identity for this test: user email, tag, or Tailscale IP."
         },
         "accept": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Destination:port pairs the source must be allowed to reach."
         },
         "srcPostureAttrs": {
-          "type": "object"
+          "type": "object",
+          "description": "Device attribute key/value pairs to simulate when evaluating posture checks for this test."
         }
       },
       "additionalProperties": false,
@@ -342,19 +396,22 @@
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Source identities for this grant."
         },
         "dst": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Destination identities for this grant."
         },
         "ip": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Permitted destination IP addresses or CIDR ranges."
         },
         "app": {
           "additionalProperties": {
@@ -363,19 +420,22 @@
             },
             "type": "array"
           },
-          "type": "object"
+          "type": "object",
+          "description": "Application-level access rules keyed by app name."
         },
         "srcPosture": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Posture checks that must pass for the source device."
         },
         "via": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "App Connector identities through which access is tunnelled."
         }
       },
       "additionalProperties": false,
@@ -387,13 +447,15 @@
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Devices to grant attributes to: tags, users, autogroups, or '*' for all devices."
         },
         "attr": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Capability attribute names to grant, e.g. 'funnel', 'mullvad', 'app-connector'."
         },
         "app": {
           "additionalProperties": {
@@ -402,13 +464,15 @@
             },
             "type": "array"
           },
-          "type": "object"
+          "type": "object",
+          "description": "Application-connector route configuration keyed by app name."
         },
         "ipPool": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "IP address pool to assign to matched devices."
         }
       },
       "additionalProperties": false,
@@ -417,19 +481,22 @@
     "NodeAttrGrantApp": {
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "App name, used to match traffic for this app connector route."
         },
         "connectors": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "Tags or IPs of the App Connector devices to route through."
         },
         "domains": {
           "items": {
             "type": "string"
           },
-          "type": "array"
+          "type": "array",
+          "description": "DNS domains whose traffic is routed through this app connector."
         }
       },
       "additionalProperties": false,
