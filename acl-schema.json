@@ -333,8 +333,13 @@
           "description": "Destination devices this SSH rule applies to, e.g. 'tag:server' or 'autogroup:self'."
         },
         "checkPeriod": {
-          "type": "integer",
-          "description": "How often re-authorization is required when action is 'check', e.g. '12h' or 'always'."
+          "type": "string",
+          "description": "How often re-authorization is required when action is 'check', e.g. '12h' or 'always'.",
+          "examples": [
+            "20h",
+            "1h30m",
+            "always"
+          ]
         },
         "recorder": {
           "items": {

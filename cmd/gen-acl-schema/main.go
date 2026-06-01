@@ -28,6 +28,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"reflect"
 	"strings"
 
 	"github.com/invopop/jsonschema"
@@ -147,6 +148,19 @@ func main() {
 	r := &jsonschema.Reflector{
 		RequiredFromJSONSchemaTags: true,
 		CommentMap:                 commentMap,
+		// SSHCheckPeriod is a time.Duration alias that marshals as a string
+		// ("20h", "1h30m", "always") via encoding.TextMarshaler. The reflector
+		// sees the underlying int64 and would emit "integer" without this override.
+		Mapper: func(t reflect.Type) *jsonschema.Schema {
+			if t == reflect.TypeOf(tsclient.SSHCheckPeriod(0)) {
+				return &jsonschema.Schema{
+					Type:        "string",
+					Description: `Duration string (e.g. "20h", "1h30m") or the special value "always" to force re-auth on every connection.`,
+					Examples:    []any{"20h", "1h30m", "always"},
+				}
+			}
+			return nil
+		},
 	}
 
 	// Pull any doc comments that exist in the upstream source from the module
