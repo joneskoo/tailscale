@@ -1,0 +1,441 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/tailscale/tailscale/main/acl-schema.json",
+  "$ref": "#/$defs/ACL",
+  "$defs": {
+    "ACL": {
+      "properties": {
+        "acls": {
+          "items": {
+            "$ref": "#/$defs/ACLEntry"
+          },
+          "type": "array"
+        },
+        "autoApprovers": {
+          "$ref": "#/$defs/ACLAutoApprovers"
+        },
+        "groups": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "type": "object"
+        },
+        "hosts": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "tagOwners": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "type": "object"
+        },
+        "derpMap": {
+          "$ref": "#/$defs/ACLDERPMap"
+        },
+        "tests": {
+          "items": {
+            "$ref": "#/$defs/ACLTest"
+          },
+          "type": "array"
+        },
+        "ssh": {
+          "items": {
+            "$ref": "#/$defs/ACLSSH"
+          },
+          "type": "array"
+        },
+        "nodeAttrs": {
+          "items": {
+            "$ref": "#/$defs/NodeAttrGrant"
+          },
+          "type": "array"
+        },
+        "disableIPv4": {
+          "type": "boolean"
+        },
+        "oneCGNATRoute": {
+          "type": "string"
+        },
+        "randomizeClientPort": {
+          "type": "boolean"
+        },
+        "grants": {
+          "items": {
+            "$ref": "#/$defs/Grant"
+          },
+          "type": "array"
+        },
+        "ipsets": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "type": "object"
+        },
+        "postures": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "type": "object"
+        },
+        "defaultSrcPosture": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "attrConfig": {
+          "additionalProperties": {
+            "$ref": "#/$defs/ACLAttrConfig"
+          },
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "ACLAttrConfig": {
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "allowSetByNode": {
+          "type": "boolean"
+        },
+        "broadcastToPeers": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "ACLAutoApprovers": {
+      "properties": {
+        "routes": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "type": "object"
+        },
+        "exitNode": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "ACLDERPMap": {
+      "properties": {
+        "regions": {
+          "patternProperties": {
+            "^[0-9]+$": {
+              "$ref": "#/$defs/ACLDERPRegion"
+            }
+          },
+          "additionalProperties": false,
+          "type": "object"
+        },
+        "omitDefaultRegions": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "ACLDERPNode": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "regionID": {
+          "type": "integer"
+        },
+        "hostName": {
+          "type": "string"
+        },
+        "certName": {
+          "type": "string"
+        },
+        "ipv4": {
+          "type": "string"
+        },
+        "ipv6": {
+          "type": "string"
+        },
+        "stunPort": {
+          "type": "integer"
+        },
+        "stunOnly": {
+          "type": "boolean"
+        },
+        "derpPort": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "ACLDERPRegion": {
+      "properties": {
+        "regionID": {
+          "type": "integer"
+        },
+        "regionCode": {
+          "type": "string"
+        },
+        "regionName": {
+          "type": "string"
+        },
+        "avoid": {
+          "type": "boolean"
+        },
+        "nodes": {
+          "items": {
+            "$ref": "#/$defs/ACLDERPNode"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "ACLEntry": {
+      "properties": {
+        "action": {
+          "type": "string"
+        },
+        "ports": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "users": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "src": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "dst": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "proto": {
+          "type": "string"
+        },
+        "srcPosture": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "ACLSSH": {
+      "properties": {
+        "action": {
+          "type": "string"
+        },
+        "users": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "src": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "dst": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "checkPeriod": {
+          "type": "integer"
+        },
+        "recorder": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "enforceRecorder": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "ACLTest": {
+      "properties": {
+        "user": {
+          "type": "string"
+        },
+        "allow": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "deny": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "src": {
+          "type": "string"
+        },
+        "accept": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "srcPostureAttrs": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Grant": {
+      "properties": {
+        "src": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "dst": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "ip": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "app": {
+          "additionalProperties": {
+            "items": {
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "type": "object"
+        },
+        "srcPosture": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "via": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "NodeAttrGrant": {
+      "properties": {
+        "target": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "attr": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "app": {
+          "additionalProperties": {
+            "items": {
+              "$ref": "#/$defs/NodeAttrGrantApp"
+            },
+            "type": "array"
+          },
+          "type": "object"
+        },
+        "ipPool": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "NodeAttrGrantApp": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "connectors": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "domains": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    }
+  },
+  "title": "Tailscale ACL Policy",
+  "description": "JSON Schema for the Tailscale network access control policy file (policy.hujson). See https://tailscale.com/kb/1018/acls for documentation."
+}
