@@ -26,12 +26,12 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"os"
 	"os/exec"
 	"reflect"
 	"strings"
 
 	"github.com/invopop/jsonschema"
+	"tailscale.com/atomicfile"
 	tsclient "tailscale.com/client/tailscale/v2"
 )
 
@@ -47,11 +47,10 @@ import (
 // in the schema, but the schema remains structurally correct.
 var commentMap = func() map[string]string {
 	const pkg = "tailscale.com/client/tailscale/v2"
-	f := func(typ, field, desc string) string {
-		return fmt.Sprintf("%s.%s.%s", pkg, typ, field)
-	}
 	m := map[string]string{}
-	set := func(typ, field, desc string) { m[f(typ, field, desc)] = desc }
+	set := func(typ, field, desc string) {
+		m[fmt.Sprintf("%s.%s.%s", pkg, typ, field)] = desc
+	}
 
 	// ACL — top-level policy file fields
 	set("ACL", "ACLs", "Access control rules specifying which sources can reach which destinations. Both legacy (users/ports) and current (src/dst) forms are accepted.")
@@ -147,7 +146,6 @@ func main() {
 
 	r := &jsonschema.Reflector{
 		RequiredFromJSONSchemaTags: true,
-		CommentMap:                 commentMap,
 		// SSHCheckPeriod is a time.Duration alias that marshals as a string
 		// ("20h", "1h30m", "always") via encoding.TextMarshaler. The reflector
 		// sees the underlying int64 and would emit "integer" without this override.
@@ -163,12 +161,22 @@ func main() {
 		},
 	}
 
-	// Pull any doc comments that exist in the upstream source from the module
-	// cache. Currently sparse, but AddGoComments is non-fatal if unavailable.
+	// First, extract whatever doc comments exist in the upstream source.
+	// AddGoComments populates r.CommentMap; entries for fields that lack
+	// comments are simply absent.
 	if dir := moduleDir("tailscale.com/client/tailscale/v2"); dir != "" {
 		if err := r.AddGoComments("tailscale.com/client/tailscale/v2", dir); err != nil {
 			log.Printf("warning: could not extract go comments: %v", err)
 		}
+	}
+
+	// Then overlay our hand-written descriptions, which take precedence over
+	// anything AddGoComments extracted for the same key.
+	if r.CommentMap == nil {
+		r.CommentMap = make(map[string]string)
+	}
+	for k, v := range commentMap {
+		r.CommentMap[k] = v
 	}
 
 	schema := r.Reflect(&tsclient.ACL{})
@@ -183,7 +191,7 @@ func main() {
 	}
 	data = append(data, '\n')
 
-	if err := os.WriteFile(*output, data, 0644); err != nil {
+	if err := atomicfile.WriteFile(*output, data, 0644); err != nil {
 		log.Fatalf("write %s: %v", *output, err)
 	}
 	log.Printf("wrote %s", *output)
