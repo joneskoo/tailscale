@@ -114,6 +114,12 @@
           "type": "array",
           "description": "Posture checks applied to all traffic sources by default, unless overridden by a per-rule srcPosture."
         },
+        "externalTailnets": {
+          "additionalProperties": {
+            "$ref": "#/$defs/ExternalTailnet"
+          },
+          "type": "object"
+        },
         "attrConfig": {
           "additionalProperties": {
             "$ref": "#/$defs/ACLAttrConfig"
@@ -399,6 +405,24 @@
         "srcPostureAttrs": {
           "type": "object",
           "description": "Device attribute key/value pairs to simulate when evaluating posture checks for this test."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "ExternalTailnet": {
+      "properties": {
+        "externalID": {
+          "type": "string"
+        },
+        "allowIncomingConnections": {
+          "type": "boolean"
+        },
+        "allowExternalReferencesTo": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
         }
       },
       "additionalProperties": false,
