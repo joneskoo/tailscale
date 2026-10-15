@@ -1,0 +1,51 @@
+name: update-acl-schema
+
+# Weekly: bump tailscale.com/client/tailscale/v2 to latest, regenerate
+# acl-schema.json and push to the ACL schema branch if anything changed.
+# Note: schedule triggers only run from the repo's default branch.
+
+on:
+  schedule:
+    - cron: "17 6 * * 1" # Mondays 06:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+env:
+  BRANCH: claude/tailscale-acl-json-schema-v2
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ env.BRANCH }}
+
+      - name: Update client and regenerate schema
+        run: |
+          ./tool/go get tailscale.com/client/tailscale/v2@latest
+          ./tool/go mod tidy
+          ./tool/go run ./tool/updateflakes
+          ./tool/go generate ./cmd/gen-acl-schema
+
+      - name: Test
+        run: ./tool/go test ./cmd/gen-acl-schema
+
+      - name: Commit and push
+        run: |
+          if git diff --quiet; then
+            echo "No changes."
+            exit 0
+          fi
+          ver=$(./tool/go list -m -f '{{.Version}}' tailscale.com/client/tailscale/v2)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -a -s -m "cmd/gen-acl-schema: regenerate for client/tailscale/v2 ${ver}"
+          git push origin "HEAD:${BRANCH}"
