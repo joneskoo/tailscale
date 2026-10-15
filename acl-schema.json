@@ -160,6 +160,15 @@
           },
           "type": "array",
           "description": "Tags or users whose devices are auto-approved to advertise themselves as exit nodes."
+        },
+        "services": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "type": "object"
         }
       },
       "additionalProperties": false,
@@ -502,6 +511,9 @@
           },
           "type": "array",
           "description": "DNS domains whose traffic is routed through this app connector."
+        },
+        "presetAppID": {
+          "type": "string"
         }
       },
       "additionalProperties": false,

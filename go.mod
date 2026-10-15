@@ -82,6 +82,7 @@ require (
 	github.com/illarion/gonotify/v3 v3.0.2
 	github.com/inetaf/tcpproxy v0.0.0-20260515195445-c159a6051109
 	github.com/insomniacslk/dhcp v0.0.0-20260901064844-234b97448fae
+	github.com/invopop/jsonschema v0.14.0
 	github.com/jellydator/ttlcache/v3 v3.4.1
 	github.com/jsimonetti/rtnetlink v1.4.2
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51
@@ -106,6 +107,7 @@ require (
 	github.com/prometheus/prometheus v0.314.0
 	github.com/robert-nix/ansihtml v1.0.1
 	github.com/safchain/ethtool v0.7.0
+	github.com/santhosh-tekuri/jsonschema/v6 v6.0.3
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/sourcegraph/go-diff v0.9.0
 	github.com/stretchr/testify v1.12.1
@@ -376,7 +378,6 @@ require (
 	github.com/hexops/gotextdiff v1.0.3 // indirect
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/invopop/jsonschema v0.14.0 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/jgautheron/goconst v1.11.0 // indirect
 	github.com/jjti/go-spancheck v0.6.5 // indirect
@@ -474,7 +475,6 @@ require (
 	github.com/ryanrolds/sqlclosecheck v0.6.0 // indirect
 	github.com/sagikazarmark/locafero v0.11.0 // indirect
 	github.com/sanposhiho/wastedassign/v2 v2.1.0 // indirect
-	github.com/santhosh-tekuri/jsonschema/v6 v6.0.3 // indirect
 	github.com/sashamelentyev/interfacebloat v1.1.0 // indirect
 	github.com/sashamelentyev/usestdlibvars v1.29.0 // indirect
 	github.com/securego/gosec/v2 v2.29.0 // indirect
