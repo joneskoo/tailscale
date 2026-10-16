@@ -125,6 +125,13 @@
             "$ref": "#/$defs/ACLAttrConfig"
           },
           "type": "object"
+        },
+        "sshTests": {
+          "items": {
+            "$ref": "#/$defs/SSHTest"
+          },
+          "type": "array",
+          "description": "Tailscale SSH test assertions verified on every policy update; a failing test blocks the update from taking effect."
         }
       },
       "additionalProperties": false,
@@ -538,6 +545,48 @@
         },
         "presetAppID": {
           "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "SSHTest": {
+      "properties": {
+        "src": {
+          "type": "string",
+          "description": "Source identity attempting the SSH connection: user email, group, tag, or host."
+        },
+        "srcPostureAttrs": {
+          "type": "object",
+          "description": "Device attribute key/value pairs to simulate when evaluating posture checks for this test."
+        },
+        "dst": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Destination devices the source connects to: user email, group, tag, or host."
+        },
+        "accept": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Usernames the source must be allowed to log in as without an additional check."
+        },
+        "check": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Usernames the source must be allowed to log in as only after an additional check."
+        },
+        "deny": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Usernames the source must NOT be allowed to log in as."
         }
       },
       "additionalProperties": false,

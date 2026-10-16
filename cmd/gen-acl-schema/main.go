@@ -140,12 +140,39 @@ var commentMap = func() map[string]string {
 	return m
 }()
 
+// SSHTest is a Tailscale SSH policy test assertion (the "sshTests" policy
+// file section). It is missing from [tsclient.ACL], so it is defined here and
+// attached to the ACL schema via [jsonschema.Reflector.AdditionalFields].
+// See https://tailscale.com/docs/reference/syntax/policy-file#sshtests.
+type SSHTest struct {
+	Source          string         `json:"src" jsonschema_description:"Source identity attempting the SSH connection: user email, group, tag, or host."`
+	SrcPostureAttrs map[string]any `json:"srcPostureAttrs,omitempty" jsonschema_description:"Device attribute key/value pairs to simulate when evaluating posture checks for this test."`
+	Destination     []string       `json:"dst" jsonschema_description:"Destination devices the source connects to: user email, group, tag, or host."`
+	Accept          []string       `json:"accept,omitempty" jsonschema_description:"Usernames the source must be allowed to log in as without an additional check."`
+	Check           []string       `json:"check,omitempty" jsonschema_description:"Usernames the source must be allowed to log in as only after an additional check."`
+	Deny            []string       `json:"deny,omitempty" jsonschema_description:"Usernames the source must NOT be allowed to log in as."`
+}
+
+// additionalFields adds policy file fields that are missing from the
+// upstream client structs.
+func additionalFields(t reflect.Type) []reflect.StructField {
+	if t == reflect.TypeOf(tsclient.ACL{}) {
+		return []reflect.StructField{{
+			Name: "SSHTests",
+			Type: reflect.TypeOf([]SSHTest{}),
+			Tag:  `json:"sshTests,omitempty" jsonschema_description:"Tailscale SSH test assertions verified on every policy update; a failing test blocks the update from taking effect."`,
+		}}
+	}
+	return nil
+}
+
 func main() {
 	output := flag.String("o", "acl-schema.json", "output file path")
 	flag.Parse()
 
 	r := &jsonschema.Reflector{
 		RequiredFromJSONSchemaTags: true,
+		AdditionalFields:           additionalFields,
 		// SSHCheckPeriod is a time.Duration alias that marshals as a string
 		// ("20h", "1h30m", "always") via encoding.TextMarshaler. The reflector
 		// sees the underlying int64 and would emit "integer" without this override.
